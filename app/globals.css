@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #11110f;
+  background:
+    linear-gradient(90deg, rgba(17, 17, 15, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(17, 17, 15, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 12% 8%, rgba(176, 131, 47, 0.24), transparent 28rem),
+    radial-gradient(circle at 92% 18%, rgba(17, 17, 15, 0.14), transparent 24rem),
+    #f3efe4;
+  background-size: 72px 72px, 72px 72px, auto, auto, auto;
+  font-family: Bahnschrift, "Segoe UI", sans-serif;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  content: "";
+  background:
+    linear-gradient(115deg, transparent 0 56%, rgba(17, 17, 15, 0.08) 56% 57%, transparent 57%),
+    linear-gradient(160deg, transparent 0 68%, rgba(176, 131, 47, 0.2) 68% 69%, transparent 69%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
