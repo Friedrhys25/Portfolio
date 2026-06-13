@@ -489,13 +489,14 @@ export default function Home() {
 
           <motion.div variants={itemVariants} className="relative w-full overflow-hidden flex whitespace-nowrap [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
             <motion.div
-              animate={{ x: ["0%", "-50%"] }}
+              animate={{ transform: ["translateX(0%)", "translateX(-50%)"] }}
               transition={{
                 duration: 30,
                 repeat: Infinity,
                 ease: "linear",
               }}
               className="flex gap-6 w-max"
+              style={{ willChange: "transform" }}
             >
               {/* Duplicate the array to create a seamless loop */}
               {[...certificates, ...certificates, ...certificates, ...certificates].map((cert, i) => (
