@@ -4,31 +4,30 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // new palette (primary three colors)
-        ink: "#4d262d",
-        paper: "#4d3226",
-        muted: "#8b6b66",
-        line: "#3b1d20",
-        brass: "#b57f86",
-        bone: "#e9d8d9",
-        panel: "#4d2641",
-      },
-      boxShadow: {
-        hard: "16px 16px 0 #11110f",
-        "hard-sm": "8px 8px 0 #11110f",
+        background: "#050505",
+        surface: "#111111",
+        surfaceHover: "#1a1a1a",
+        primary: "#fafafa",
+        muted: "#a1a1aa",
+        border: "#27272a",
+        accent: "#3b82f6",
       },
       fontFamily: {
-        display: ["Georgia", "Times New Roman", "serif"],
-        body: ["Bahnschrift", "Segoe UI", "sans-serif"],
-      },
-      keyframes: {
-        reveal: {
-          "0%": { opacity: "0", transform: "translateY(46px) skewY(1deg)" },
-          "100%": { opacity: "1", transform: "translateY(0) skewY(0)" },
-        },
+        sans: ["var(--font-inter)", "sans-serif"],
       },
       animation: {
-        reveal: "reveal 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both",
+        "fade-in": "fadeIn 0.5s ease-out forwards",
+        "slide-up": "slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
+        slideUp: {
+          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
       },
     },
   },

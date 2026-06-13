@@ -1,313 +1,332 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StackIcon from "tech-stack-icons";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
+import Image from "next/image";
+import profilePic from "./assets/images/barong (1).jpeg";
 
 const navItems = ["Profile", "Stack", "Experience", "Contact"];
 
 const stack = [
   {
     title: "Frontend",
-    icons: ["html5", "css3", "js", "react", "tailwindcss", "nextjs2"],
+    items: [
+      { id: "html5", label: "HTML5" },
+      { id: "css3", label: "CSS3" },
+      { id: "js", label: "JavaScript" },
+      { id: "react", label: "React" },
+      { id: "tailwindcss", label: "Tailwind" },
+      { id: "nextjs2", label: "Next.js" },
+    ],
   },
   {
     title: "Backend",
-    icons: ["nodejs", "expressjs", "python", "postman", "docker"],
+    items: [
+      { id: "nodejs", label: "Node.js" },
+      { id: "expressjs", label: "Express", invert: true },
+      { id: "python", label: "Python" },
+      { id: "postman", label: "Postman" },
+      { id: "docker", label: "Docker" },
+    ],
   },
   {
     title: "Mobile",
-    icons: ["android", "reactnative"],
+    items: [
+      { id: "android", label: "Android" },
+      { id: "reactnative", label: "React Native" },
+    ],
   },
   {
     title: "Tools",
-    icons: ["git", "github", "vercel", "render"],
+    items: [
+      { id: "git", label: "Git" },
+      { id: "github", label: "GitHub", invert: true },
+      { id: "vercel", label: "Vercel", invert: true },
+      { id: "render", label: "Render", invert: true },
+    ],
   },
   {
     title: "AI Workflow",
-    icons: ["claude", "openai", "antigravity", "copilotgithub", "cursor", "qwen"],
+    items: [
+      { id: "claude", label: "Claude" },
+      { id: "openai", label: "OpenAI" },
+      { id: "copilotgithub", label: "Copilot" },
+      { id: "cursor", label: "Cursor" },
+    ],
     wide: true,
   },
 ];
 
-function Reveal({ children, className = "", delay = 0, as: Tag = "div", ...props }) {
-  const nodeRef = useRef(null);
-  const [visible, setVisible] = useState(false);
+// Emil Kowalski easing
+const easeOut = [0.23, 1, 0.32, 1];
 
-  useEffect(() => {
-    const node = nodeRef.current;
-    if (!node) return undefined;
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.4, ease: easeOut }
+  }
+};
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setVisible(true);
-        observer.unobserve(entry.target);
-      },
-      { threshold: 0.16, rootMargin: "0px 0px -80px 0px" }
-    );
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
 
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+function Button({ children, href, icon: Icon, primary = false }) {
+  const baseClasses = "group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 text-sm font-medium transition-transform active:scale-95";
+  const primaryClasses = "bg-primary text-background hover:bg-primary/90";
+  const secondaryClasses = "bg-surface border border-border text-primary hover:bg-surfaceHover";
+
+  const Comp = href ? "a" : "button";
 
   return (
-    <Tag
-      ref={nodeRef}
-      className={`${className} ${
-        visible ? "animate-reveal" : "opacity-0 translate-y-10"
-      }`}
-      style={{ animationDelay: `${delay}ms` }}
-      {...props}
+    <Comp
+      href={href}
+      className={`${baseClasses} ${primary ? primaryClasses : secondaryClasses}`}
     >
-      {children}
-    </Tag>
+      <span className="relative z-10">{children}</span>
+      {Icon && <Icon size={16} className="relative z-10 transition-transform group-hover:translate-x-0.5" />}
+    </Comp>
   );
 }
 
+const BackgroundAnimation = () => (
+  <div className="fixed inset-0 z-[-1] overflow-hidden bg-background flex items-center justify-center">
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-surface via-background to-background opacity-80 z-10 pointer-events-none" />
+    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light z-20 pointer-events-none" />
+
+    {/* Pulse Radius Rings */}
+    {[0, 1, 2, 3].map((i) => (
+      <motion.div
+        key={i}
+        className="absolute h-[300px] w-[300px] rounded-full border border-accent/40 bg-accent/5"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{
+          scale: [0.8, 3, 6],
+          opacity: [0, 0.6, 0],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeOut",
+          delay: i * 3,
+        }}
+      />
+    ))}
+  </div>
+);
+
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Avoid hydration mismatch
+
   return (
     <>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-20 opacity-[0.18] mix-blend-multiply [background-image:repeating-radial-gradient(circle_at_0_0,rgba(17,17,15,0.5)_0_1px,transparent_1px_4px)]"
-      />
+      <BackgroundAnimation />
 
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b-2 border-line bg-paper/85 px-5 py-4 backdrop-blur-xl md:px-14">
-        <a
-          href="#top"
-          aria-label="Rhys Jonathan Abalon home"
-          className="grid h-[52px] w-[52px] place-items-center border-2 border-ink bg-ink font-display text-lg font-black tracking-[-0.08em] text-paper [transform:skew(-8deg)]"
-        >
-          RJA
-        </a>
-        <nav
-          aria-label="Primary navigation"
-          className="grid grid-cols-2 gap-x-5 gap-y-2 text-[0.68rem] font-black uppercase tracking-[0.12em] text-muted sm:flex sm:gap-8 sm:text-xs"
-        >
-          {navItems.map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="relative after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-0.5 after:origin-right after:scale-x-0 after:bg-brass after:transition-transform hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100"
-            >
-              {item}
-            </a>
-          ))}
-        </nav>
+      <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/50 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+          <a href="#top" className="text-lg font-bold tracking-tighter text-primary">
+            Rizz
+          </a>
+          <nav className="hidden sm:flex gap-8 text-sm font-medium text-muted">
+            {navItems.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="transition-colors hover:text-primary"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+        </div>
       </header>
 
-      <main id="top" className="overflow-hidden">
-        <section className="grid min-h-[calc(100vh-90px)] grid-cols-1 items-center gap-10 px-5 py-16 md:grid-cols-[minmax(140px,0.34fr)_minmax(0,1fr)] md:px-14 md:py-32">
-          <Reveal className="md:col-start-1">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-brass">
-              Computer Science · Data Science · Web Engineering
-            </p>
-            <h1 className="mt-5 font-display text-[clamp(4.4rem,15vw,14rem)] font-black leading-[0.9] tracking-[-0.075em] md:w-min">
-              Rhys Jonathan Abalon
-            </h1>
-            <p className="mt-7 max-w-2xl text-[clamp(1.1rem,2vw,1.45rem)] leading-relaxed text-muted">
-              Aspiring web developer and software engineer building sharp
-              digital products, practical automations, and full-stack web
-              experiences.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3.5">
-              <a
-                href="#contact"
-                className="inline-flex min-h-12 items-center border-2 border-ink bg-ink px-5 font-black uppercase tracking-[0.08em] text-paper transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-sm"
-              >
-                Work With Me
-              </a>
-              <a
-                href="#stack"
-                className="inline-flex min-h-12 items-center border-2 border-ink px-5 font-black uppercase tracking-[0.08em] transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-sm"
-              >
-                View Stack
-              </a>
-            </div>
-          </Reveal>
-
-          <Reveal
-            delay={120}
-            as="aside"
-            className="grid min-h-0 rotate-[1.2deg] border-2 border-ink bg-panel shadow-hard md:col-start-2 md:min-h-[520px]"
-          >
-            {[
-              ["23", "Years old"],
-              ["BSCS", "Laguna University"],
-              ["3 mo.", "Web development internship"],
-            ].map(([value, label], index) => (
-              <div
-                key={label}
-                className={`flex flex-col gap-6 p-7 sm:flex-row sm:items-end sm:justify-between md:p-10 ${
-                  index !== 2 ? "border-b-2 border-ink" : ""
-                }`}
-              >
-                <span className="font-display text-[clamp(2.6rem,7vw,7rem)] font-black leading-[0.85] tracking-[-0.08em]">
-                  {value}
-                </span>
-                <p className="m-0 max-w-40 font-black uppercase text-muted sm:text-right">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </Reveal>
-        </section>
-
-        <section
-          id="profile"
-          className="grid grid-cols-1 gap-8 px-5 py-20 md:grid-cols-[minmax(140px,0.34fr)_minmax(0,1fr)] md:gap-20 md:px-14 md:py-36"
+      <main id="top" className="mx-auto max-w-5xl px-6 pt-32 pb-24 space-y-32">
+        {/* Hero Section */}
+        <motion.section
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="relative flex flex-col items-start pt-12 md:pt-24"
         >
-          <Reveal className="flex items-start gap-3 font-black uppercase tracking-[0.16em] text-muted">
-            <span className="text-brass">01</span>
-            <p className="m-0">Profile</p>
-          </Reveal>
-          <Reveal className="max-w-5xl border-2 border-ink bg-panel/75 p-8 md:p-16">
-            <h2 className="font-display text-[clamp(2.7rem,8vw,7.6rem)] font-black leading-[0.9] tracking-[-0.075em]">
-              Builder focused on web systems and automation.
-            </h2>
-
-            <div className="mt-6 flex items-center gap-4">
-              <StackIcon name="nextjs" />
-              <StackIcon name="reactnative" />
-              <a
-                href="/api/cv"
-                className="inline-flex items-center ml-4 rounded border-2 border-ink bg-ink px-4 py-2 font-black uppercase text-paper"
-              >
-                Download CV
-              </a>
+          <motion.div variants={itemVariants} className="rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-medium text-muted mb-6">
+            Available for new opportunities
+          </motion.div>
+          <motion.div variants={itemVariants} className="flex flex-col lg:flex-row items-start gap-12 w-full">
+            <Image
+              src={profilePic}
+              alt="Rhys Jonathan Abalon"
+              className="w-full max-w-sm rounded-3xl object-cover border border-border shadow-2xl lg:h-[400px] lg:w-[320px]"
+              priority
+            />
+            <div className="flex flex-col items-start pt-4">
+              <h1 className="text-5xl font-bold tracking-tight text-primary md:text-7xl lg:text-8xl">
+                Rhys Jonathan <br className="hidden md:block" />
+                <span className="text-muted">Abalon</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg text-muted md:text-xl leading-relaxed">
+                Software engineer obsessed with design engineering, fluid interfaces, and building systems that feel incredibly fast.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-4">
+                <Button href="#contact" primary icon={ArrowRight}>Let's talk</Button>
+                <Button href="/api/cv" icon={Download}>Resume</Button>
+              </div>
             </div>
+          </motion.div>
+        </motion.section>
 
-            <p className="mt-7 text-[clamp(1rem,1.7vw,1.24rem)] leading-loose text-muted">
-              I studied Bachelor of Science in Computer Science at Laguna
-              University with a specialization in Data Science. My current path
-              is focused on becoming a web developer or software engineer, with
-              hands-on practice across front-end interfaces, back-end services,
-              mobile development, deployment, and Python automation.
+        {/* Profile Section */}
+        <motion.section
+          id="profile"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
+        >
+          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
+            01. Background
+          </motion.h2>
+          <motion.div variants={itemVariants} className="rounded-3xl border border-border bg-surface/50 p-8 md:p-12 backdrop-blur-sm">
+            <p className="text-lg leading-relaxed text-muted">
+              I studied Computer Science at Laguna University specializing in Data Science.
+              My expertise bridges the gap between deep technical systems and polished user interfaces.
+              I build web applications that not only work flawlessly under the hood but feel alive in the user's hands.
             </p>
-          </Reveal>
-        </section>
+          </motion.div>
+        </motion.section>
 
-        <section id="stack" className="bg-panel/80 px-5 py-20 text-ink md:px-14 md:py-36">
-          <Reveal className="max-w-5xl">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-brass">
-              Technical Range
-            </p>
-            <h2 className="font-display text-[clamp(2.7rem,8vw,7.6rem)] font-black leading-[0.9] tracking-[-0.075em]">
-              Stack built for shipping complete products.
-            </h2>
-          </Reveal>
-
-          <div className="mt-12 grid grid-cols-1 gap-4 md:mt-20 md:grid-cols-2 xl:grid-cols-4">
-            {stack.map((item, index) => (
-              <Reveal
-                key={item.title}
-                delay={index * 80}
-                as="article"
-                className={`min-h-64 border-2 border-paper/70 bg-[#171713] p-7 transition hover:-translate-y-2 hover:bg-[#201d17] ${
-                  item.wide ? "xl:col-span-2" : ""
-                }`}
+        {/* Stack Section */}
+        <motion.section
+          id="stack"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
+        >
+          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
+            02. Arsenal
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {stack.map((group, i) => (
+              <motion.div
+                key={group.title}
+                variants={itemVariants}
+                className={`rounded-3xl border border-border bg-surface/50 p-6 backdrop-blur-sm transition-colors hover:bg-surface ${group.wide ? "lg:col-span-2" : ""
+                  }`}
               >
-                <h3 className="mb-5 font-display text-[clamp(1.7rem,3vw,3.2rem)] font-black leading-none tracking-[-0.06em]">
-                  {item.title}
-                </h3>
-                <div className="m-0 flex flex-wrap gap-3 items-center">
-                  {(item.icons || []).map((icon) => (
-                    <div key={icon} className="flex items-center justify-center w-12 h-12">
-                      <StackIcon name={icon} />
+                <h3 className="text-sm font-medium text-muted mb-6 uppercase tracking-wider">{group.title}</h3>
+                <div className="flex flex-wrap gap-6">
+                  {group.items.map((item) => (
+                    <div key={item.id} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1 hover:scale-105 active:scale-95 duration-200">
+                      <div className={`h-10 w-10 ${item.invert ? "invert brightness-0" : ""}`}>
+                        <StackIcon name={item.id} />
+                      </div>
+                      <span className="text-xs font-medium text-muted">{item.label}</span>
                     </div>
                   ))}
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
-        <section
+        {/* Experience Section */}
+        <motion.section
           id="experience"
-          className="grid grid-cols-1 gap-8 px-5 py-20 md:grid-cols-[minmax(140px,0.34fr)_minmax(0,1fr)] md:gap-20 md:px-14 md:py-36"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
         >
-          <Reveal className="flex items-start gap-3 font-black uppercase tracking-[0.16em] text-muted">
-            <span className="text-brass">02</span>
-            <p className="m-0">Experience</p>
-          </Reveal>
-          <Reveal className="grid gap-4">
+          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
+            03. Experience
+          </motion.h2>
+          <div className="space-y-4">
             {[
               {
-                date: "3 months",
-                title: "Web Development Intern · SP Madrid",
-                logo: "/assets/images/spmadrid.png",
-                body: "Worked on web development tasks and created Python automations to reduce repetitive work and support internal workflows.",
+                role: "Web Development Intern",
+                company: "SP. Madrid & Associates",
+                date: "Feb 2026 - Apr 2026",
+                desc: "Engineered Python automations and web tools that eliminated repetitive manual tasks, accelerating internal workflows significantly."
               },
               {
-                date: "Freelance",
-                title: "Freelance Developer · Identity studio",
-                logo: "/assets/images/identityLogo.png",
-                body: "Created a centralized POS for the barbershop including a landing page, analytics dashboard, and an integrated POS — replacing manual pen-and-paper sales tracking and Excel imports.",
-              },
-              {
-                date: "Current focus",
-                title: "Software Engineering Path",
-                body: "Expanding production skills through modern web stacks, deployment platforms, AI-assisted development tools, and practical automation.",
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="grid gap-6 border-2 border-ink bg-panel/75 p-7 md:grid-cols-[minmax(220px,0.44fr)_minmax(0,1fr)] md:p-10"
+                role: "Freelance Engineer",
+                company: "Identity Studio",
+                date: "Apr 2026 - Present",
+                desc: "Architected a full-stack POS system combining a beautiful landing page, detailed analytics dashboard, and seamless sales tracking to replace legacy Excel workflows."
+              }
+            ].map((job, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                className="group rounded-3xl border border-border bg-surface/50 p-8 backdrop-blur-sm transition-colors hover:bg-surface"
               >
-                <div>
-                  <span className="text-xs font-black uppercase tracking-[0.18em] text-brass">
-                    {item.date}
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-primary">{job.role}</h3>
+                    <p className="text-muted">{job.company}</p>
+                  </div>
+                  <span className="text-sm font-medium text-muted mt-2 md:mt-0 px-3 py-1 rounded-full border border-border/50 bg-background/50">
+                    {job.date}
                   </span>
-                    {item.logo && (
-                      <img
-                        src={`/api/images/${item.logo.split("/").pop()}`}
-                        alt={item.title}
-                        className="mt-3 mb-2 h-12 w-12 object-contain"
-                      />
-                    )}
-                  <h3 className="mt-3 font-display text-[clamp(1.7rem,3vw,3.2rem)] font-black leading-none tracking-[-0.06em]">
-                    {item.title}
-                  </h3>
                 </div>
-                <p className="m-0 text-[clamp(1rem,1.7vw,1.24rem)] leading-loose text-muted">
-                  {item.body}
+                <p className="text-muted leading-relaxed max-w-3xl">
+                  {job.desc}
                 </p>
-              </article>
+              </motion.div>
             ))}
-          </Reveal>
-        </section>
+          </div>
+        </motion.section>
 
-        <Reveal
+        {/* Contact Section */}
+        <motion.section
           id="contact"
-          as="section"
-          className="m-5 border-2 border-ink bg-panel p-8 shadow-hard-sm md:m-14 md:p-20 md:shadow-hard"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
         >
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-brass">
-            Open to Opportunities
-          </p>
-          <h2 className="font-display text-[clamp(2.7rem,8vw,7.6rem)] font-black leading-[0.9] tracking-[-0.075em]">
-            Available for web development, software engineering, and automation work.
-          </h2>
-          <a
-            href="mailto:rhysabalon123@gmail.com"
-            className="ml-7 mt-8 inline-flex min-h-12 items-center border-2 border-ink bg-ink px-5 font-black uppercase tracking-[0.08em] text-paper transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-sm"
-          >
-            Email: rhysabalon123@gmail.com
-          </a>
-          <a
-            href="https://github.com/Friedrhys25"
-            className="ml-7 mt-8 inline-flex min-h-12 items-center border-2 border-ink bg-ink px-5 font-black uppercase tracking-[0.08em] text-paper transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-sm"
-          >
-            Github: Friedrhys25
-          </a>
-          <a
-            href="https://www.linkedin.com/in/rhysabalon"
-            className="ml-7 mt-8 inline-flex min-h-12 items-center border-2 border-ink bg-ink px-5 font-black uppercase tracking-[0.08em] text-paper transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard-sm"
-          >
-            LinkedIn: rhysabalon
-          </a>
-        </Reveal>
+          <motion.div variants={itemVariants} className="rounded-3xl border border-border bg-gradient-to-b from-surface to-background p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent/10 via-transparent to-transparent opacity-50" />
+            <h2 className="relative text-3xl font-bold tracking-tight md:text-5xl mb-6">
+              Let's build something.
+            </h2>
+            <p className="relative text-muted text-lg max-w-xl mx-auto mb-10">
+              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+            </p>
+            <div className="relative flex flex-wrap justify-center gap-4">
+              <Button href="mailto:rhysabalon123@gmail.com" primary icon={Mail}>Email</Button>
+              <Button href="https://github.com/Friedrhys25" icon={Github}>GitHub</Button>
+              <Button href="https://www.linkedin.com/in/rhysabalon" icon={Linkedin}>LinkedIn</Button>
+            </div>
+          </motion.div>
+        </motion.section>
       </main>
+
+      <footer className="border-t border-border/50 bg-background py-8 text-center">
+        <p className="text-sm text-muted flex items-center justify-center gap-2">
+          Crafted with care <span className="text-accent">✦</span> 2026
+        </p>
+      </footer>
     </>
   );
 }
