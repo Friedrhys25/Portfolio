@@ -42,3 +42,4 @@ Thumbs.db
 # Optional: lockfiles are usually committed; uncomment to ignore
 # package-lock.json
 # yarn.lock
+.agents/

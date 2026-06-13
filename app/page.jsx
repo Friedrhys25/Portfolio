@@ -2,12 +2,53 @@
 
 import { useEffect, useState } from "react";
 import StackIcon from "tech-stack-icons";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { ArrowRight, Download, Mail, Github, Linkedin, X } from "lucide-react";
 import Image from "next/image";
 import profilePic from "./assets/images/barong (1).jpeg";
+import spMadridLogo from "./assets/images/spmadrid.png";
+import identityLogo from "./assets/images/identityLogo.png";
+import gmailLogo from "./assets/logos/gmail.png";
+import linkedinLogo from "./assets/logos/linkedin.png";
 
-const navItems = ["Profile", "Stack", "Experience", "Contact"];
+// Certificates
+import certCodeKada from "./assets/certificates/Copy of Copy of Rhys Jonathan Abalon.png";
+import certPython from "./assets/certificates/Screenshot 2026-06-14 015812.png";
+import certJava from "./assets/certificates/Screenshot 2026-06-14 015744.png";
+
+// Identity
+import idDash from "./assets/portfolio/identity/dash.png";
+import idExpen from "./assets/portfolio/identity/expen.png";
+import idLanding from "./assets/portfolio/identity/landing.png";
+import idLog from "./assets/portfolio/identity/log.png";
+
+// Smartlearn
+import sl1 from "./assets/portfolio/smartlearn/smartlearn1.png";
+import sl2 from "./assets/portfolio/smartlearn/smartlearn2.png";
+import sl3 from "./assets/portfolio/smartlearn/smartlearn3.png";
+import sl4 from "./assets/portfolio/smartlearn/smartlearn4.png";
+
+// Syncspace
+import ss1 from "./assets/portfolio/syncspace/sycnspace1.png";
+import ss2 from "./assets/portfolio/syncspace/sycnspace2.png";
+import ss3 from "./assets/portfolio/syncspace/syncspace3.png";
+
+// Talk2Kap
+import tk1 from "./assets/portfolio/talk2kap/1st.png";
+import tk2 from "./assets/portfolio/talk2kap/2nd.png";
+import tk3 from "./assets/portfolio/talk2kap/3rd.png";
+import tk4 from "./assets/portfolio/talk2kap/4th.png";
+import tk5 from "./assets/portfolio/talk2kap/5th.png";
+
+// Talk2us
+import tu1 from "./assets/portfolio/talk2us/1.jpeg";
+import tu2 from "./assets/portfolio/talk2us/2.jpeg";
+import tu3 from "./assets/portfolio/talk2us/3.jpeg";
+import tu4 from "./assets/portfolio/talk2us/4.jpeg";
+import tu5 from "./assets/portfolio/talk2us/5.jpeg";
+import tu6 from "./assets/portfolio/talk2us/6.jpeg";
+
+const navItems = ["Profile", "Stack", "Projects", "Experience", "Certificates", "Contact"];
 
 const stack = [
   {
@@ -29,6 +70,15 @@ const stack = [
       { id: "python", label: "Python" },
       { id: "postman", label: "Postman" },
       { id: "docker", label: "Docker" },
+    ],
+  },
+  {
+    title: "Database",
+    items: [
+      { id: "firebase", label: "Firebase" },
+      { id: "supabase", label: "Supabase" },
+      { id: "mysql", label: "MySQL" },
+      { id: "postgresql", label: "PostgreSQL" },
     ],
   },
   {
@@ -59,6 +109,41 @@ const stack = [
   },
 ];
 
+const projects = [
+  {
+    title: "Identity",
+    desc: "A centralized Point-of-Sale architecture empowering multi-branch businesses to seamlessly track sales and analytics in real-time.",
+    images: [idLanding, idDash, idExpen, idLog],
+  },
+  {
+    title: "Smartlearn",
+    desc: "A completely free, AI-driven educational platform built on a custom fine-tuned dataset to enhance student learning.",
+    images: [sl1, sl2, sl3, sl4],
+  },
+  {
+    title: "Syncspace",
+    desc: "An experimental virtual office environment designed to explore remote collaboration and digital workspace interactions.",
+    images: [ss1, ss2, ss3],
+  },
+  {
+    title: "Talk2Kap",
+    desc: "A comprehensive administrative dashboard for efficiently managing, tracking, and resolving civic complaints.",
+    images: [tk1, tk2, tk3, tk4, tk5],
+  },
+  {
+    title: "Talk2Us",
+    desc: "A mobile application that provides citizens with a streamlined interface for submitting and tracking local community reports.",
+    images: [tu1, tu2, tu3, tu4, tu5, tu6],
+    isMobile: true,
+  }
+];
+
+const certificates = [
+  { title: "CodeKada: The Online Hackathon", image: certCodeKada },
+  { title: "Introduction to Python", image: certPython },
+  { title: "Java Fundamentals", image: certJava },
+];
+
 // Emil Kowalski easing
 const easeOut = [0.23, 1, 0.32, 1];
 
@@ -80,7 +165,7 @@ const containerVariants = {
   }
 };
 
-function Button({ children, href, icon: Icon, primary = false }) {
+function Button({ children, href, icon: Icon, customIcon, primary = false }) {
   const baseClasses = "group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 text-sm font-medium transition-transform active:scale-95";
   const primaryClasses = "bg-primary text-background hover:bg-primary/90";
   const secondaryClasses = "bg-surface border border-border text-primary hover:bg-surfaceHover";
@@ -92,8 +177,9 @@ function Button({ children, href, icon: Icon, primary = false }) {
       href={href}
       className={`${baseClasses} ${primary ? primaryClasses : secondaryClasses}`}
     >
+      {customIcon && <span className="relative z-10 flex items-center justify-center transition-transform group-hover:-translate-x-0.5">{customIcon}</span>}
+      {Icon && !customIcon && <Icon size={16} className="relative z-10 transition-transform group-hover:-translate-x-0.5" />}
       <span className="relative z-10">{children}</span>
-      {Icon && <Icon size={16} className="relative z-10 transition-transform group-hover:translate-x-0.5" />}
     </Comp>
   );
 }
@@ -126,6 +212,7 @@ const BackgroundAnimation = () => (
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     setMounted(true);
@@ -135,6 +222,51 @@ export default function Home() {
 
   return (
     <>
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-12"
+          >
+            <motion.div
+              className="absolute inset-0 bg-background/80 backdrop-blur-md"
+              onClick={() => setSelectedProject(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-border p-4 px-6">
+                <h3 className="text-xl font-bold">{selectedProject.title}</h3>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="rounded-full p-2 transition-colors hover:bg-surfaceHover active:scale-95"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className={`flex-1 overflow-y-auto p-4 md:p-8 ${selectedProject.isMobile ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-start' : 'space-y-8'}`}>
+                {selectedProject.images.map((img, idx) => (
+                  <div key={idx} className="relative w-full rounded-2xl border border-border/50 bg-background/50 flex p-2">
+                    <Image
+                      src={img}
+                      alt={`${selectedProject.title} screenshot ${idx + 1}`}
+                      className="w-full h-auto rounded-xl"
+                      sizes="(max-width: 1024px) 100vw, 1024px"
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <BackgroundAnimation />
 
       <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/50 backdrop-blur-xl">
@@ -247,6 +379,43 @@ export default function Home() {
           </div>
         </motion.section>
 
+        {/* Projects Section */}
+        <motion.section
+          id="projects"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
+        >
+          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
+            03. Projects
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {projects.map((proj, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                onClick={() => setSelectedProject(proj)}
+                className="group relative overflow-hidden rounded-3xl border border-border bg-surface/50 p-4 backdrop-blur-sm transition-colors hover:bg-surface flex flex-col gap-4 cursor-pointer"
+              >
+                <div className={`relative aspect-video w-full overflow-hidden rounded-2xl border border-border/50 bg-background/50 ${proj.isMobile ? 'p-2' : ''}`}>
+                  <Image
+                    src={proj.images[0]}
+                    alt={proj.title}
+                    fill
+                    className={`${proj.isMobile ? 'object-contain' : 'object-cover'} transition-transform duration-500 group-hover:scale-105`}
+                  />
+                </div>
+                <div className="px-2 pb-2">
+                  <h3 className="text-xl font-bold text-primary">{proj.title}</h3>
+                  <p className="text-muted mt-2 text-sm leading-relaxed">{proj.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
         {/* Experience Section */}
         <motion.section
           id="experience"
@@ -257,7 +426,7 @@ export default function Home() {
           className="scroll-mt-32"
         >
           <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
-            03. Experience
+            04. Experience
           </motion.h2>
           <div className="space-y-4">
             {[
@@ -265,13 +434,15 @@ export default function Home() {
                 role: "Web Development Intern",
                 company: "SP. Madrid & Associates",
                 date: "Feb 2026 - Apr 2026",
-                desc: "Engineered Python automations and web tools that eliminated repetitive manual tasks, accelerating internal workflows significantly."
+                desc: "Engineered Python automations and web tools that eliminated repetitive manual tasks, accelerating internal workflows significantly.",
+                logo: spMadridLogo,
               },
               {
                 role: "Freelance Engineer",
                 company: "Identity Studio",
                 date: "Apr 2026 - Present",
-                desc: "Architected a full-stack POS system combining a beautiful landing page, detailed analytics dashboard, and seamless sales tracking to replace legacy Excel workflows."
+                desc: "Architected a full-stack POS system combining a beautiful landing page, detailed analytics dashboard, and seamless sales tracking to replace legacy Excel workflows.",
+                logo: identityLogo,
               }
             ].map((job, i) => (
               <motion.div
@@ -281,6 +452,13 @@ export default function Home() {
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                   <div>
+                    {job.logo && (
+                      <Image
+                        src={job.logo}
+                        alt={job.company}
+                        className="h-12 w-auto object-contain mb-3"
+                      />
+                    )}
                     <h3 className="text-xl font-bold text-primary">{job.role}</h3>
                     <p className="text-muted">{job.company}</p>
                   </div>
@@ -294,6 +472,50 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </motion.section>
+
+        {/* Certificates Section */}
+        <motion.section
+          id="certificates"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="scroll-mt-32"
+        >
+          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
+            05. Certificates
+          </motion.h2>
+
+          <motion.div variants={itemVariants} className="relative w-full overflow-hidden flex whitespace-nowrap [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+            <motion.div
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{
+                duration: 30,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="flex gap-6 w-max"
+            >
+              {/* Duplicate the array to create a seamless loop */}
+              {[...certificates, ...certificates, ...certificates, ...certificates].map((cert, i) => (
+                <div
+                  key={i}
+                  className="relative w-[300px] sm:w-[400px] aspect-[4/3] flex-shrink-0 overflow-hidden rounded-3xl border border-border bg-surface/50 p-2 backdrop-blur-sm transition-transform hover:scale-[1.02]"
+                >
+                  <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border/50 bg-background/50">
+                    <Image
+                      src={cert.image}
+                      alt={cert.title}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
         </motion.section>
 
         {/* Contact Section */}
@@ -314,9 +536,25 @@ export default function Home() {
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
             </p>
             <div className="relative flex flex-wrap justify-center gap-4">
-              <Button href="mailto:rhysabalon123@gmail.com" primary icon={Mail}>Email</Button>
-              <Button href="https://github.com/Friedrhys25" icon={Github}>GitHub</Button>
-              <Button href="https://www.linkedin.com/in/rhysabalon" icon={Linkedin}>LinkedIn</Button>
+              <Button
+                href="mailto:rhysabalon123@gmail.com"
+                primary
+                customIcon={<Image src={gmailLogo} alt="Gmail" className="h-4 w-auto object-contain" />}
+              >
+                Email
+              </Button>
+              <Button
+                href="https://github.com/Friedrhys25"
+                customIcon={<div className="h-4 w-4 invert brightness-0"><StackIcon name="github" /></div>}
+              >
+                GitHub
+              </Button>
+              <Button
+                href="https://www.linkedin.com/in/rhysabalon"
+                customIcon={<Image src={linkedinLogo} alt="LinkedIn" className="h-4 w-auto object-contain" />}
+              >
+                LinkedIn
+              </Button>
             </div>
           </motion.div>
         </motion.section>
@@ -324,7 +562,7 @@ export default function Home() {
 
       <footer className="border-t border-border/50 bg-background py-8 text-center">
         <p className="text-sm text-muted flex items-center justify-center gap-2">
-          Crafted with care <span className="text-accent">✦</span> 2026
+          Rhys Jonathan Abalon <span className="text-accent">✦</span> 2026
         </p>
       </footer>
     </>

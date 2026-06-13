@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata = {
-  title: "Rhys Jonathan Abalon | Web Developer",
+  title: "Rhys Jonathan Abalon | Portfolio",
   description:
     "Portfolio of Rhys Jonathan Abalon, a computer science graduate specializing in data science, web development, software engineering, and automation.",
 };
