@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import StackIcon from "tech-stack-icons";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
-import { ArrowRight, Download, Mail, Github, Linkedin, X } from "lucide-react";
+import { ArrowRight, Download, Mail, Github, Linkedin, X, Sun, Moon } from "lucide-react";
 import Image from "next/image";
 import profilePic from "./assets/images/barong (1).jpeg";
+import profilePicLight from "./assets/images/toga (1).jpeg";
 import spMadridLogo from "./assets/images/spmadrid.png";
 import identityLogo from "./assets/images/identityLogo.png";
 import gmailLogo from "./assets/logos/gmail.png";
 import linkedinLogo from "./assets/logos/linkedin.png";
+import rizzLogo from "./assets/images/rizzlogoSvg.svg";
 
 // Certificates
 import certCodeKada from "./assets/certificates/Copy of Copy of Rhys Jonathan Abalon.png";
@@ -84,7 +86,7 @@ const stack = [
   {
     title: "Mobile",
     items: [
-      { id: "android", label: "Android" },
+      { id: "android", label: "Android Studio" },
       { id: "reactnative", label: "React Native" },
     ],
   },
@@ -102,8 +104,8 @@ const stack = [
     items: [
       { id: "claude", label: "Claude" },
       { id: "openai", label: "OpenAI" },
-      { id: "copilotgithub", label: "Copilot" },
-      { id: "cursor", label: "Cursor" },
+      { id: "copilotgithub", label: "Copilot", invert: true },
+      { id: "cursor", label: "Cursor", invert: true },
     ],
     wide: true,
   },
@@ -148,11 +150,10 @@ const certificates = [
 const easeOut = [0.23, 1, 0.32, 1];
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  hidden: { opacity: 0, transform: "translateY(20px) scale(0.95)" },
   visible: {
     opacity: 1,
-    y: 0,
-    scale: 1,
+    transform: "translateY(0px) scale(1)",
     transition: { duration: 0.4, ease: easeOut }
   }
 };
@@ -194,9 +195,9 @@ const BackgroundAnimation = () => (
       <motion.div
         key={i}
         className="absolute h-[300px] w-[300px] rounded-full border border-accent/40 bg-accent/5"
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ transform: "scale(0.8)", opacity: 0 }}
         animate={{
-          scale: [0.8, 3, 6],
+          transform: ["scale(0.8)", "scale(3)", "scale(6)"],
           opacity: [0, 0.6, 0],
         }}
         transition={{
@@ -205,6 +206,7 @@ const BackgroundAnimation = () => (
           ease: "easeOut",
           delay: i * 3,
         }}
+        style={{ willChange: "transform, opacity" }}
       />
     ))}
   </div>
@@ -213,15 +215,84 @@ const BackgroundAnimation = () => (
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [showSplash, setShowSplash] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    const timer = setTimeout(() => setShowSplash(false), 2800);
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   if (!mounted) return null; // Avoid hydration mismatch
 
   return (
     <>
+      {/* Splash Screen */}
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transform: "scale(1.02)" }}
+            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background"
+          >
+            {/* Logo */}
+            <motion.div
+              initial={{ opacity: 0, transform: "scale(0.9)" }}
+              animate={{ opacity: 1, transform: "scale(1)" }}
+              transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+              style={{ willChange: "transform, opacity" }}
+              className="mb-12"
+            >
+              <Image
+                src={rizzLogo}
+                alt="Rizz Logo"
+                className={`h-24 w-auto md:h-32 transition-all duration-300 ${isDarkMode ? 'invert brightness-200' : ''}`}
+                priority
+              />
+            </motion.div>
+
+            {/* Brand text */}
+            <motion.p
+              initial={{ opacity: 0, transform: "translateY(8px)" }}
+              animate={{ opacity: 1, transform: "translateY(0px)" }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
+              className="text-sm font-medium tracking-[0.3em] uppercase text-muted mb-10"
+            >
+              Portfolio
+            </motion.p>
+
+            {/* Loading bar */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+              className="w-48 h-[2px] bg-border rounded-full overflow-hidden"
+            >
+              <motion.div
+                initial={{ transform: "translateX(-100%)" }}
+                animate={{ transform: "translateX(0%)" }}
+                transition={{ duration: 2, ease: [0.23, 1, 0.32, 1], delay: 0.6 }}
+                style={{ willChange: "transform" }}
+                className="h-full w-full bg-primary rounded-full"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -235,10 +306,11 @@ export default function Home() {
               onClick={() => setSelectedProject(null)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, transform: "scale(0.95) translateY(20px)" }}
+              animate={{ opacity: 1, transform: "scale(1) translateY(0px)" }}
+              exit={{ opacity: 0, transform: "scale(0.95) translateY(20px)" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              style={{ willChange: "transform, opacity" }}
               className="relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-border p-4 px-6">
@@ -269,22 +341,31 @@ export default function Home() {
 
       <BackgroundAnimation />
 
-      <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/50 backdrop-blur-xl">
+      <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/50 backdrop-blur-xl transition-colors duration-300">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <a href="#top" className="text-lg font-bold tracking-tighter text-primary">
+          <a href="#top" className="flex items-center gap-2 text-lg font-bold tracking-tighter text-primary">
+            <Image src={rizzLogo} alt="Logo" className={`h-8 w-auto transition-all duration-300 ${isDarkMode ? 'invert brightness-200' : ''}`} />
             Rizz
           </a>
-          <nav className="hidden sm:flex gap-8 text-sm font-medium text-muted">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="transition-colors hover:text-primary"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
+          <div className="flex items-center gap-6">
+            <nav className="hidden sm:flex gap-8 text-sm font-medium text-muted">
+              {navItems.map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="transition-colors hover:text-primary"
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full border border-border/50 bg-surface/50 text-muted transition-colors hover:bg-surface hover:text-primary active:scale-95"
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -300,12 +381,49 @@ export default function Home() {
             Available for new opportunities
           </motion.div>
           <motion.div variants={itemVariants} className="flex flex-col lg:flex-row items-start gap-12 w-full">
-            <Image
-              src={profilePic}
-              alt="Rhys Jonathan Abalon"
-              className="w-full max-w-sm rounded-3xl object-cover border border-border shadow-2xl lg:h-[400px] lg:w-[320px]"
-              priority
-            />
+            <div className="relative w-full max-w-sm shrink-0 lg:h-[400px] lg:w-[320px]">
+              <AnimatePresence mode="wait">
+                {isDarkMode ? (
+                  <motion.div
+                    key="dark-pic"
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={profilePic}
+                      alt="Rhys Jonathan Abalon"
+                      fill
+                      className="rounded-3xl object-cover border border-border shadow-2xl"
+                      priority
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="light-pic"
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={profilePicLight}
+                      alt="Rhys Jonathan Abalon"
+                      fill
+                      className="rounded-3xl object-cover border border-border shadow-2xl"
+                      priority
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {/* Maintain layout spacing since position absolute is used */}
+              <div className="pointer-events-none opacity-0">
+                <Image src={profilePic} alt="spacer" className="w-full max-w-sm rounded-3xl object-cover lg:h-[400px] lg:w-[320px]" />
+              </div>
+            </div>
             <div className="flex flex-col items-start pt-4">
               <h1 className="text-5xl font-bold tracking-tight text-primary md:text-7xl lg:text-8xl">
                 Rhys Jonathan <br className="hidden md:block" />
@@ -367,7 +485,7 @@ export default function Home() {
                 <div className="flex flex-wrap gap-6">
                   {group.items.map((item) => (
                     <div key={item.id} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1 hover:scale-105 active:scale-95 duration-200">
-                      <div className={`h-10 w-10 ${item.invert ? "invert brightness-0" : ""}`}>
+                      <div className={`h-10 w-10 transition-all duration-300 ${item.invert ? (isDarkMode ? "invert brightness-0" : "brightness-0") : ""}`}>
                         <StackIcon name={item.id} />
                       </div>
                       <span className="text-xs font-medium text-muted">{item.label}</span>
@@ -546,7 +664,7 @@ export default function Home() {
               </Button>
               <Button
                 href="https://github.com/Friedrhys25"
-                customIcon={<div className="h-4 w-4 invert brightness-0"><StackIcon name="github" /></div>}
+                customIcon={<div className={`h-4 w-4 transition-all duration-300 ${isDarkMode ? "invert brightness-0" : "brightness-0"}`}><StackIcon name="github" /></div>}
               >
                 GitHub
               </Button>

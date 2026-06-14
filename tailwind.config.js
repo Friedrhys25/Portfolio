@@ -1,16 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        background: "#050505",
-        surface: "#111111",
-        surfaceHover: "#1a1a1a",
-        primary: "#fafafa",
-        muted: "#a1a1aa",
-        border: "#27272a",
-        accent: "#3b82f6",
+        background: "var(--color-background)",
+        surface: "var(--color-surface)",
+        surfaceHover: "var(--color-surface-hover)",
+        primary: "var(--color-primary)",
+        muted: "var(--color-muted)",
+        border: "var(--color-border)",
+        accent: "var(--color-accent)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],

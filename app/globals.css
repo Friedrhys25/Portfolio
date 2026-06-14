@@ -3,6 +3,24 @@
 @tailwind utilities;
 
 :root {
+  --color-background: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f4f5;
+  --color-primary: #111111;
+  --color-muted: #71717a;
+  --color-border: #e4e4e7;
+  --color-accent: #3b82f6;
+  color-scheme: light;
+}
+
+.dark {
+  --color-background: #050505;
+  --color-surface: #111111;
+  --color-surface-hover: #1a1a1a;
+  --color-primary: #fafafa;
+  --color-muted: #a1a1aa;
+  --color-border: #27272a;
+  --color-accent: #3b82f6;
   color-scheme: dark;
 }
 
