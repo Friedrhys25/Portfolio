@@ -212,6 +212,68 @@ const BackgroundAnimation = () => (
   </div>
 );
 
+function ExperienceCard({ job, itemVariants }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <motion.div
+      variants={itemVariants}
+      className="group rounded-3xl border border-border bg-surface/50 p-8 backdrop-blur-sm transition-colors hover:bg-surface cursor-pointer"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
+      <div className="flex flex-col md:flex-row justify-between mb-2 gap-4">
+        <div>
+          {job.logo && (
+            <Image
+              src={job.logo}
+              alt={job.company}
+              className="h-12 w-auto object-contain mb-4"
+            />
+          )}
+          <h3 className="text-xl font-bold text-primary">{job.role}</h3>
+          <p className="text-muted">{job.company}</p>
+        </div>
+        <span className="text-sm font-medium text-muted px-3 py-1 rounded-full border border-border/50 bg-background/50 self-start whitespace-nowrap">
+          {job.date}
+        </span>
+      </div>
+      
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pt-4 pb-2">
+              {Array.isArray(job.desc) ? (
+                <ul className="list-disc list-outside ml-5 text-muted leading-relaxed max-w-3xl space-y-2">
+                  {job.desc.map((bullet, idx) => (
+                    <li key={idx}>{bullet}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-muted leading-relaxed max-w-3xl">
+                  {job.desc}
+                </p>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4 flex items-center gap-2 text-sm font-medium text-accent">
+        <span className="transition-transform duration-300" style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>
+          <ArrowRight size={16} className="rotate-90" />
+        </span>
+        {isExpanded ? "Show less" : "See more"}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -430,7 +492,7 @@ export default function Home() {
                 <span className="text-muted">Abalon</span>
               </h1>
               <p className="mt-6 max-w-2xl text-lg text-muted md:text-xl leading-relaxed">
-                Software engineer obsessed with design engineering, fluid interfaces, and building systems that feel incredibly fast.
+                Aspiring Software engineer building fast web and mobile apps. No gimmicks just clean interfaces, practical automation, and solid code.
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Button href="#contact" primary icon={ArrowRight}>Let's talk</Button>
@@ -454,9 +516,7 @@ export default function Home() {
           </motion.h2>
           <motion.div variants={itemVariants} className="rounded-3xl border border-border bg-surface/50 p-8 md:p-12 backdrop-blur-sm">
             <p className="text-lg leading-relaxed text-muted">
-              I studied Computer Science at Laguna University specializing in Data Science.
-              My expertise bridges the gap between deep technical systems and polished user interfaces.
-              I build web applications that not only work flawlessly under the hood but feel alive in the user's hands.
+              I am a 23-year-old Computer Science graduate from Laguna University, specializing in Data Science. As an aspiring software engineer and web developer, I am passionate about building robust and scalable applications. My professional experience includes a dedicated internship at SP. Madrid & Associates, where I focused on web development and engineered Python automations to streamline complex workflows. I leverage a comprehensive modern tech stack including React, Next.js, Node.js, and Python alongside advanced AI tools to deliver efficient, well-architected, and user-centric solutions.
             </p>
           </motion.div>
         </motion.section>
@@ -549,45 +609,32 @@ export default function Home() {
           <div className="space-y-4">
             {[
               {
-                role: "Web Development Intern",
-                company: "SP. Madrid & Associates",
-                date: "Feb 2026 - Apr 2026",
-                desc: "Engineered Python automations and web tools that eliminated repetitive manual tasks, accelerating internal workflows significantly.",
-                logo: spMadridLogo,
-              },
-              {
-                role: "Freelance Engineer",
+                role: "Freelance Developer",
                 company: "Identity Studio",
                 date: "Apr 2026 - Present",
-                desc: "Architected a full-stack POS system combining a beautiful landing page, detailed analytics dashboard, and seamless sales tracking to replace legacy Excel workflows.",
+                desc: [
+                  "Engineered a centralized point of sales system for a barbershop client, enhancing client revenue monitoring across multiple branches and providing critical business insights using Nextjs, Expressjs, Tailwind, and Supabase.",
+                  "Collaborated with clients to customize solutions that align with the specific operational needs, achieving high levels of client satisfaction.",
+                  "Developed technical documentation to facilitate system maintenance and future updates, ensuring long term client support.",
+                  "Solicited feedback from end-users to continuously improve application functionality and design."
+                ],
                 logo: identityLogo,
+              },
+              {
+                role: "A.I Prompt Engineer Intern",
+                company: "SP. Madrid & Associates",
+                date: "Feb 2026 - Apr 2026",
+                desc: [
+                  "Assisted in creating an inventory tracking system using Nextjs, Express, Tailwind, and Supabase, allowing for real-time monitoring of stock levels and sales data.",
+                  "Automated data extraction from web sources to ERP-ready Excel files, significantly improving the efficiency of the inventory management system.",
+                  "Engaged in collaborative development efforts to ensure the system was user-centric and client specifications.",
+                  "Supported project implementation by performing system testing and troubleshooting, ensuring a seamless rollout and user experience.",
+                  "Documented code and development user manuals for non-technical clients, facilitating easier use of the inventory management software."
+                ],
+                logo: spMadridLogo,
               }
             ].map((job, i) => (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                className="group rounded-3xl border border-border bg-surface/50 p-8 backdrop-blur-sm transition-colors hover:bg-surface"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-                  <div>
-                    {job.logo && (
-                      <Image
-                        src={job.logo}
-                        alt={job.company}
-                        className="h-12 w-auto object-contain mb-3"
-                      />
-                    )}
-                    <h3 className="text-xl font-bold text-primary">{job.role}</h3>
-                    <p className="text-muted">{job.company}</p>
-                  </div>
-                  <span className="text-sm font-medium text-muted mt-2 md:mt-0 px-3 py-1 rounded-full border border-border/50 bg-background/50">
-                    {job.date}
-                  </span>
-                </div>
-                <p className="text-muted leading-relaxed max-w-3xl">
-                  {job.desc}
-                </p>
-              </motion.div>
+              <ExperienceCard key={i} job={job} itemVariants={itemVariants} />
             ))}
           </div>
         </motion.section>
