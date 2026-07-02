@@ -32,6 +32,23 @@ body {
   /* No need for old gradients */
 }
 
+@keyframes rizz-dot {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  35% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.animate-rizz-dot {
+  animation: rizz-dot 900ms var(--ease-out) infinite;
+}
+
 /* Base custom easing from Emil Kowalski */
 :root {
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
