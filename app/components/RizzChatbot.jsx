@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, Minus, Send, ShieldCheck, Sparkles, X } from "lucide-react";
+import { MessageCircle, Minus, Send, ShieldCheck } from "lucide-react";
 import rizzLogo from "../assets/images/rizzlogoSvg.svg";
 
 const starterPrompts = [
@@ -154,7 +154,7 @@ export default function RizzChatbot() {
             <header className="border-b border-border/70 bg-surface/80 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-background shadow-sm">
+                  <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-background shadow-sm">
                     <Image src={rizzLogo} alt="Rizz logo" className="h-6 w-auto dark:invert dark:brightness-200" />
                     <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-surface bg-emerald-400" />
                   </div>
@@ -171,27 +171,14 @@ export default function RizzChatbot() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-full p-2 text-muted transition-colors duration-150 hover:bg-surfaceHover hover:text-primary active:scale-95"
-                    aria-label="Minimize Rizz"
-                  >
-                    <Minus size={17} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMessages(initialMessages);
-                      setInput("");
-                    }}
-                    className="rounded-full p-2 text-muted transition-colors duration-150 hover:bg-surfaceHover hover:text-primary active:scale-95"
-                    aria-label="Reset chat"
-                  >
-                    <X size={17} />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full p-2 text-muted transition-colors duration-150 hover:bg-surfaceHover hover:text-primary active:scale-95"
+                  aria-label="Minimize Rizz"
+                >
+                  <Minus size={17} />
+                </button>
               </div>
             </header>
 
@@ -261,7 +248,7 @@ export default function RizzChatbot() {
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         whileTap={{ scale: 0.96 }}
-        className="group relative flex h-16 w-16 items-center justify-center rounded-3xl border border-border bg-primary text-background shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+        className="group relative flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-background shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
         aria-label={isOpen ? "Close Rizz chatbot" : "Open Rizz chatbot"}
       >
         <span className="absolute -inset-1 rounded-[28px] bg-accent/20 opacity-0 blur-md transition-opacity duration-200 group-hover:opacity-100" />
@@ -272,11 +259,6 @@ export default function RizzChatbot() {
             <Image src={rizzLogo} alt="" className="h-7 w-auto dark:invert dark:brightness-200" />
           )}
         </span>
-        {!isOpen && (
-          <span className="absolute -left-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-accent shadow-sm">
-            <Sparkles size={14} />
-          </span>
-        )}
       </motion.button>
     </div>
   );
