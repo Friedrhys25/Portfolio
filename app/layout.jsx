@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import "./globals.css";
+import RizzChatbot from "./components/RizzChatbot";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={inter.variable}>
       <body className="bg-background text-primary font-sans antialiased min-h-screen selection:bg-accent/30 selection:text-primary">
         {children}
+        <RizzChatbot />
       </body>
     </html>
   );
