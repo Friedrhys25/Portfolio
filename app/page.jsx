@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import StackIcon from "tech-stack-icons";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate, AnimatePresence } from "framer-motion";
 import { ArrowRight, Download, Mail, Github, Linkedin, X, Sun, Moon } from "lucide-react";
 import Image from "next/image";
 import profilePic from "./assets/images/barong (1).jpeg";
@@ -185,32 +185,88 @@ function Button({ children, href, icon: Icon, customIcon, primary = false }) {
   );
 }
 
-const BackgroundAnimation = () => (
-  <div className="fixed inset-0 z-[-1] overflow-hidden bg-background flex items-center justify-center">
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-surface via-background to-background opacity-80 z-10 pointer-events-none" />
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light z-20 pointer-events-none" />
+const BackgroundAnimation = () => {
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const logoX = useSpring(useTransform(pointerX, [-1, 1], [-34, 34]), { stiffness: 80, damping: 22 });
+  const logoY = useSpring(useTransform(pointerY, [-1, 1], [-24, 24]), { stiffness: 80, damping: 22 });
+  const glowX = useSpring(useTransform(pointerX, [-1, 1], [-90, 90]), { stiffness: 70, damping: 24 });
+  const glowY = useSpring(useTransform(pointerY, [-1, 1], [-70, 70]), { stiffness: 70, damping: 24 });
+  const rotateX = useSpring(useTransform(pointerY, [-1, 1], [7, -7]), { stiffness: 90, damping: 24 });
+  const rotateY = useSpring(useTransform(pointerX, [-1, 1], [-9, 9]), { stiffness: 90, damping: 24 });
+  const logoTransform = useMotionTemplate`translate3d(${logoX}px, ${logoY}px, 0) perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  const glowTransform = useMotionTemplate`translate3d(${glowX}px, ${glowY}px, 0)`;
 
-    {/* Pulse Radius Rings */}
-    {[0, 1, 2, 3].map((i) => (
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      pointerX.set((event.clientX / window.innerWidth - 0.5) * 2);
+      pointerY.set((event.clientY / window.innerHeight - 0.5) * 2);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, [pointerX, pointerY]);
+
+  return (
+    <div className="pointer-events-none fixed inset-0 z-[-1] flex items-center justify-center overflow-hidden bg-background">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-surface via-background to-background opacity-80" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light" />
+
       <motion.div
-        key={i}
-        className="absolute h-[300px] w-[300px] rounded-full border border-accent/40 bg-accent/5"
-        initial={{ transform: "scale(0.8)", opacity: 0 }}
-        animate={{
-          transform: ["scale(0.8)", "scale(3)", "scale(6)"],
-          opacity: [0, 0.6, 0],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: "easeOut",
-          delay: i * 3,
-        }}
-        style={{ willChange: "transform, opacity" }}
+        className="absolute h-[min(78vw,720px)] w-[min(78vw,720px)] rounded-[42%] bg-accent/10 blur-3xl"
+        animate={{ opacity: [0.14, 0.28, 0.14] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transform: glowTransform, willChange: "transform, opacity" }}
       />
-    ))}
-  </div>
-);
+
+      <motion.div
+        className="relative flex h-[min(62vw,580px)] w-[min(62vw,580px)] items-center justify-center"
+        animate={{ opacity: [0.78, 1, 0.78] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transform: logoTransform, transformStyle: "preserve-3d", willChange: "transform, opacity" }}
+      >
+        {[0, 1, 2].map((index) => (
+          <motion.div
+            key={index}
+            className="absolute h-[86%] w-[86%] rounded-full border border-accent/20 bg-accent/[0.025]"
+            initial={{ transform: "scale(0.78)", opacity: 0 }}
+            animate={{
+              transform: ["scale(0.78)", "scale(1.62)", "scale(2.55)"],
+              opacity: [0, 0.3, 0],
+            }}
+            transition={{
+              duration: 9,
+              repeat: Infinity,
+              ease: [0.23, 1, 0.32, 1],
+              delay: index * 3,
+            }}
+            style={{ willChange: "transform, opacity" }}
+          />
+        ))}
+        <Image
+          src={rizzLogo}
+          alt=""
+          priority
+          className="absolute h-[94%] w-auto object-contain opacity-[0.08] blur-[14px] dark:invert dark:brightness-200"
+        />
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{ transform: ["translateY(0px) scale(1)", "translateY(-10px) scale(1.025)", "translateY(0px) scale(1)"] }}
+          transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{ willChange: "transform" }}
+        >
+          <Image
+            src={rizzLogo}
+            alt=""
+            priority
+            className="h-[90%] w-auto object-contain opacity-[0.22] drop-shadow-[0_0_36px_rgba(59,130,246,0.42)] dark:invert dark:brightness-200 dark:opacity-[0.28]"
+          />
+        </motion.div>
+        <div className="absolute inset-4 bg-[linear-gradient(110deg,transparent_20%,rgba(59,130,246,0.18)_48%,transparent_74%)] opacity-45 mix-blend-screen blur-lg" />
+      </motion.div>
+    </div>
+  );
+};
 
 function ExperienceCard({ job, itemVariants }) {
   const [isExpanded, setIsExpanded] = useState(false);
