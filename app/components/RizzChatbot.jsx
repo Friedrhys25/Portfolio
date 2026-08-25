@@ -20,6 +20,8 @@ const initialMessages = [
   },
 ];
 
+const isMaintenanceMode = true;
+
 function TypingDots() {
   return (
     <span className="inline-flex items-center gap-1" aria-hidden="true">
@@ -102,7 +104,7 @@ export default function RizzChatbot() {
 
   async function sendMessage(nextMessage = input) {
     const trimmed = nextMessage.trim();
-    if (!trimmed || isThinking || typingId) return;
+    if (!trimmed || isMaintenanceMode || isThinking || typingId) return;
 
     const userMessage = {
       id: `user-${Date.now()}`,
@@ -167,7 +169,7 @@ export default function RizzChatbot() {
                       </span>
                     </div>
                     <p className="mt-0.5 text-xs text-muted">
-                      {isThinking ? "Thinking through Rhys.md" : typingId ? "Typing a response" : "Portfolio assistant"}
+                      {isMaintenanceMode ? "Temporarily unavailable" : isThinking ? "Thinking through Rhys.md" : typingId ? "Typing a response" : "Portfolio assistant"}
                     </p>
                   </div>
                 </div>
@@ -187,6 +189,12 @@ export default function RizzChatbot() {
                 <MessageBubble key={message.id} message={message} isTyping={typingId === message.id} />
               ))}
 
+              {isMaintenanceMode && (
+                <div className="rounded-2xl bg-surface/70 p-4 text-sm leading-relaxed text-muted shadow-[0_12px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_14px_34px_rgba(0,0,0,0.22)]">
+                  Chatbot Rizz is under maintenance. Rizz will be back once maintenance is complete. For now, please use the contact links below to reach Rhys directly.
+                </div>
+              )}
+
               {isThinking && (
                 <div className="flex justify-start">
                   <div className="rounded-2xl rounded-bl-md border border-border bg-surface px-4 py-3 text-sm text-muted shadow-sm">
@@ -197,7 +205,7 @@ export default function RizzChatbot() {
             </div>
 
             <div className="border-t border-border/70 bg-surface/70 p-3">
-              <div className="mb-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
+              {!isMaintenanceMode && <div className="mb-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
                 {starterPrompts.map((prompt) => (
                   <button
                     key={prompt}
@@ -209,7 +217,7 @@ export default function RizzChatbot() {
                     {prompt}
                   </button>
                 ))}
-              </div>
+              </div>}
 
               <form onSubmit={handleSubmit} className="flex items-end gap-2">
                 <label className="sr-only" htmlFor="rizz-message">
@@ -219,6 +227,7 @@ export default function RizzChatbot() {
                   ref={inputRef}
                   id="rizz-message"
                   value={input}
+                  disabled={isMaintenanceMode}
                   onChange={(event) => setInput(event.target.value.slice(0, 700))}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" && !event.shiftKey) {
@@ -226,7 +235,7 @@ export default function RizzChatbot() {
                       sendMessage();
                     }
                   }}
-                  placeholder="Ask about Rhys..."
+                  placeholder={isMaintenanceMode ? "Chatbot unavailable during maintenance" : "Ask about Rhys..."}
                   rows={1}
                   className="max-h-28 min-h-11 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-sm text-primary outline-none transition-colors placeholder:text-muted focus:border-accent"
                 />

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import StackIcon from "tech-stack-icons";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate, AnimatePresence } from "framer-motion";
-import { ArrowRight, Download, Mail, Github, Linkedin, X, Sun, Moon } from "lucide-react";
+import { ArrowRight, Download, X, Sun, Moon, Code2, Server, Database, Smartphone, Wrench, Bot, ExternalLink, CalendarDays } from "lucide-react";
 import Image from "next/image";
-import profilePic from "./assets/images/barong (1).jpeg";
-import profilePicLight from "./assets/images/toga (1).jpeg";
+import profilePic from "./assets/images/RhysDay.jpg";
+import profilePicLight from "./assets/images/RhysNight.jpg";
 import spMadridLogo from "./assets/images/spmadrid.png";
 import identityLogo from "./assets/images/identityLogo.png";
 import gmailLogo from "./assets/logos/gmail.png";
@@ -55,6 +55,10 @@ const navItems = ["Profile", "Stack", "Projects", "Experience", "Certificates", 
 const stack = [
   {
     title: "Frontend",
+    role: "Interfaces",
+    summary: "Responsive product surfaces with clean interaction patterns.",
+    icon: Code2,
+    tone: "from-sky-500/15 to-cyan-400/5",
     items: [
       { id: "html5", label: "HTML5" },
       { id: "css3", label: "CSS3" },
@@ -66,6 +70,10 @@ const stack = [
   },
   {
     title: "Backend",
+    role: "Services",
+    summary: "APIs, automations, and deployment-ready server foundations.",
+    icon: Server,
+    tone: "from-emerald-500/15 to-lime-400/5",
     items: [
       { id: "nodejs", label: "Node.js" },
       { id: "expressjs", label: "Express", invert: true },
@@ -76,6 +84,10 @@ const stack = [
   },
   {
     title: "Database",
+    role: "Data",
+    summary: "Structured storage for reporting, operations, and app state.",
+    icon: Database,
+    tone: "from-teal-500/15 to-green-400/5",
     items: [
       { id: "firebase", label: "Firebase" },
       { id: "supabase", label: "Supabase" },
@@ -85,6 +97,10 @@ const stack = [
   },
   {
     title: "Mobile",
+    role: "Devices",
+    summary: "Cross-platform mobile workflows and Android build experience.",
+    icon: Smartphone,
+    tone: "from-amber-500/15 to-orange-400/5",
     items: [
       { id: "android", label: "Android Studio" },
       { id: "reactnative", label: "React Native" },
@@ -92,6 +108,10 @@ const stack = [
   },
   {
     title: "Tools",
+    role: "Delivery",
+    summary: "Version control, hosting, testing, and release workflows.",
+    icon: Wrench,
+    tone: "from-rose-500/15 to-red-400/5",
     items: [
       { id: "git", label: "Git" },
       { id: "github", label: "GitHub", invert: true },
@@ -101,6 +121,10 @@ const stack = [
   },
   {
     title: "AI Workflow",
+    role: "Acceleration",
+    summary: "AI-assisted development for research, prototyping, and review.",
+    icon: Bot,
+    tone: "from-stone-500/15 to-zinc-300/5",
     items: [
       { id: "claude", label: "Claude" },
       { id: "openai", label: "OpenAI" },
@@ -116,26 +140,56 @@ const projects = [
     title: "Identity",
     desc: "A centralized Point-of-Sale architecture empowering multi-branch businesses to seamlessly track sales and analytics in real-time.",
     images: [idLanding, idDash, idExpen, idLog],
+    href: "https://identity-khaki.vercel.app/",
+    linkLabel: "Live site",
+    date: "Apr - Jun 2026",
+    role: "Developer",
+    development: "From scratch",
+    techStack: ["Next.js", "React", "Tailwind", "HTML", "CSS", "JavaScript", "TypeScript", "PostgreSQL", "Supabase"],
   },
   {
     title: "Smartlearn",
     desc: "A completely free, AI-driven educational platform built on a custom fine-tuned dataset to enhance student learning.",
     images: [sl1, sl2, sl3, sl4],
+    href: "https://github.com/thebadsektor/tc3202-3b-1.git",
+    linkLabel: "GitHub repo",
+    date: "Dec 2024 - Feb 2025",
+    role: "Developer",
+    development: "From scratch",
+    techStack: ["React", "Vite", "HTML", "CSS", "JavaScript", "Tailwind"],
   },
   {
     title: "Syncspace",
     desc: "An experimental virtual office environment designed to explore remote collaboration and digital workspace interactions.",
     images: [ss1, ss2, ss3],
+    href: "https://github.com/shankencedric/SyncSpace.git",
+    linkLabel: "GitHub repo",
+    date: "May 2026",
+    role: "Developer",
+    development: "From scratch",
+    techStack: ["Next.js", "React", "Tailwind", "HTML", "CSS", "JavaScript", "TypeScript"],
   },
   {
     title: "Talk2Kap",
     desc: "A comprehensive administrative dashboard for efficiently managing, tracking, and resolving civic complaints.",
     images: [tk1, tk2, tk3, tk4, tk5],
+    href: "https://talk2kap.online/",
+    linkLabel: "Live site",
+    date: "Nov 2025 - Mar 2026",
+    role: "Developer",
+    development: "From scratch",
+    techStack: ["React", "Vite", "Tailwind", "JavaScript", "Firebase"],
   },
   {
     title: "Talk2Us",
     desc: "A mobile application that provides citizens with a streamlined interface for submitting and tracking local community reports.",
     images: [tu1, tu2, tu3, tu4, tu5, tu6],
+    href: "https://github.com/Friedrhys25/thesisDevelopment.git",
+    linkLabel: "GitHub repo",
+    date: "Nov 2025 - Mar 2026",
+    role: "Developer",
+    development: "From scratch",
+    techStack: ["React Native", "Python", "CSS", "JavaScript", "Firebase"],
     isMobile: true,
   }
 ];
@@ -169,7 +223,7 @@ const containerVariants = {
 function Button({ children, href, icon: Icon, customIcon, primary = false }) {
   const baseClasses = "group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 text-sm font-medium transition-transform active:scale-95";
   const primaryClasses = "bg-primary text-background hover:bg-primary/90";
-  const secondaryClasses = "bg-surface border border-border text-primary hover:bg-surfaceHover";
+  const secondaryClasses = "bg-surface text-primary shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:bg-surfaceHover dark:shadow-[0_18px_50px_rgba(0,0,0,0.28)]";
 
   const Comp = href ? "a" : "button";
 
@@ -182,6 +236,30 @@ function Button({ children, href, icon: Icon, customIcon, primary = false }) {
       {Icon && !customIcon && <Icon size={16} className="relative z-10 transition-transform group-hover:-translate-x-0.5" />}
       <span className="relative z-10">{children}</span>
     </Comp>
+  );
+}
+
+function ProjectAction({ project }) {
+  const isGithub = project.href.includes("github.com");
+
+  return (
+    <a
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-background shadow-[0_14px_34px_rgba(0,0,0,0.18)] transition-colors hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent/40 active:scale-95 dark:shadow-[0_18px_44px_rgba(0,0,0,0.42)]"
+      aria-label={`${project.linkLabel} for ${project.title}`}
+    >
+      {isGithub ? (
+        <span className="h-4 w-4 invert dark:invert-0">
+          <StackIcon name="github" />
+        </span>
+      ) : (
+        <ExternalLink size={16} />
+      )}
+      <span>{project.linkLabel}</span>
+    </a>
   );
 }
 
@@ -269,62 +347,45 @@ const BackgroundAnimation = () => {
 };
 
 function ExperienceCard({ job, itemVariants }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   return (
     <motion.div
       variants={itemVariants}
-      className="group rounded-3xl border border-border bg-surface/50 p-8 backdrop-blur-sm transition-colors hover:bg-surface cursor-pointer"
-      onClick={() => setIsExpanded(!isExpanded)}
+      className="group relative overflow-hidden rounded-3xl bg-surface/65 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 dark:shadow-[0_22px_80px_rgba(0,0,0,0.30)]"
     >
-      <div className="flex flex-col md:flex-row justify-between mb-2 gap-4">
-        <div>
-          {job.logo && (
-            <Image
-              src={job.logo}
-              alt={job.company}
-              className="h-12 w-auto object-contain mb-4"
-            />
-          )}
-          <h3 className="text-xl font-bold text-primary">{job.role}</h3>
-          <p className="text-muted">{job.company}</p>
+      <div className="relative rounded-2xl bg-background/60 p-5 md:p-6">
+        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+          <div className="min-w-0">
+            {job.logo && (
+              <Image
+                src={job.logo}
+                alt={job.company}
+                className="mb-5 h-12 w-auto object-contain"
+              />
+            )}
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">{job.type}</p>
+            <h3 className="text-xl font-bold tracking-tight text-primary">{job.role}</h3>
+            <p className="mt-1 text-muted">{job.company}</p>
+          </div>
+          <span className="inline-flex self-start whitespace-nowrap rounded-full bg-surface/85 px-3 py-1.5 text-sm font-medium text-muted shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.26)]">
+            {job.date}
+          </span>
         </div>
-        <span className="text-sm font-medium text-muted px-3 py-1 rounded-full border border-border/50 bg-background/50 self-start whitespace-nowrap">
-          {job.date}
-        </span>
-      </div>
-      
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="pt-4 pb-2">
-              {Array.isArray(job.desc) ? (
-                <ul className="list-disc list-outside ml-5 text-muted leading-relaxed max-w-3xl space-y-2">
-                  {job.desc.map((bullet, idx) => (
-                    <li key={idx}>{bullet}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-muted leading-relaxed max-w-3xl">
-                  {job.desc}
-                </p>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      <div className="mt-4 flex items-center gap-2 text-sm font-medium text-accent">
-        <span className="transition-transform duration-300" style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>
-          <ArrowRight size={16} className="rotate-90" />
-        </span>
-        {isExpanded ? "Show less" : "See more"}
+        <div className="mt-6">
+          <ul className="ml-5 max-w-3xl list-disc space-y-2 text-muted leading-relaxed">
+            {job.desc.map((bullet, idx) => (
+              <li key={idx}>{bullet}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2">
+          {job.techStack.map((tech) => (
+            <span key={tech} className="rounded-full bg-surface/80 px-2.5 py-1 text-xs font-medium text-muted shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_28px_rgba(0,0,0,0.22)]">
+              {tech}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
@@ -429,20 +490,46 @@ export default function Home() {
               exit={{ opacity: 0, transform: "scale(0.95) translateY(20px)" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
               style={{ willChange: "transform, opacity" }}
-              className="relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
+              className="relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-surface shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-border p-4 px-6">
-                <h3 className="text-xl font-bold">{selectedProject.title}</h3>
+              <div className="flex items-center justify-between bg-background/40 p-4 px-6">
+                <div className="min-w-0">
+                  <h3 className="text-xl font-bold text-primary">{selectedProject.title}</h3>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted">
+                    <span className="inline-flex items-center gap-1.5">
+                      <CalendarDays size={14} />
+                      {selectedProject.date}
+                    </span>
+                    <span className="h-1 w-1 rounded-full bg-border" />
+                    <span>{selectedProject.role}</span>
+                    <span className="h-1 w-1 rounded-full bg-border" />
+                    <span>{selectedProject.development}</span>
+                  </div>
+                </div>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="rounded-full p-2 transition-colors hover:bg-surfaceHover active:scale-95"
+                  className="rounded-full p-2 transition-colors hover:bg-surfaceHover focus:outline-none focus:ring-2 focus:ring-accent/40 active:scale-95"
+                  aria-label="Close project gallery"
                 >
                   <X size={20} />
                 </button>
               </div>
+              <div className="bg-background/25 px-6 py-4">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <p className="max-w-3xl text-sm leading-relaxed text-muted">{selectedProject.desc}</p>
+                  <ProjectAction project={selectedProject} />
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {selectedProject.techStack.map((tech) => (
+                    <span key={tech} className="rounded-full bg-background/70 px-3 py-1 text-xs font-medium text-muted">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
               <div className={`flex-1 overflow-y-auto p-4 md:p-8 ${selectedProject.isMobile ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-start' : 'space-y-8'}`}>
                 {selectedProject.images.map((img, idx) => (
-                  <div key={idx} className="relative w-full rounded-2xl border border-border/50 bg-background/50 flex p-2">
+                  <div key={idx} className="relative flex w-full rounded-2xl bg-background/55 p-2 shadow-[0_18px_50px_rgba(0,0,0,0.10)] dark:shadow-[0_18px_60px_rgba(0,0,0,0.30)]">
                     <Image
                       src={img}
                       alt={`${selectedProject.title} screenshot ${idx + 1}`}
@@ -459,19 +546,19 @@ export default function Home() {
 
       <BackgroundAnimation />
 
-      <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/50 backdrop-blur-xl transition-colors duration-300">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <header className="fixed top-4 z-50 w-full px-4">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between rounded-full bg-surface/80 px-4 shadow-[0_18px_60px_rgba(0,0,0,0.10)] backdrop-blur-xl transition-colors duration-300 dark:shadow-[0_18px_80px_rgba(0,0,0,0.40)]">
           <a href="#top" className="flex items-center gap-2 text-lg font-bold tracking-tighter text-primary">
             <Image src={rizzLogo} alt="Logo" className={`h-8 w-auto transition-all duration-300 ${isDarkMode ? 'invert brightness-200' : ''}`} />
             Rizz
           </a>
-          <div className="flex items-center gap-6">
-            <nav className="hidden sm:flex gap-8 text-sm font-medium text-muted">
+          <div className="flex items-center gap-3">
+            <nav className="hidden sm:flex gap-1 rounded-full bg-background/60 p-1 text-sm font-medium text-muted">
               {navItems.map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="transition-colors hover:text-primary"
+                  className="rounded-full px-3 py-1.5 transition-colors hover:bg-surface hover:text-primary"
                 >
                   {item}
                 </a>
@@ -479,7 +566,8 @@ export default function Home() {
             </nav>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full border border-border/50 bg-surface/50 text-muted transition-colors hover:bg-surface hover:text-primary active:scale-95"
+              className="rounded-full bg-background/70 p-2 text-muted transition-colors hover:bg-surfaceHover hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent/40 active:scale-95"
+              aria-label="Toggle color theme"
             >
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -495,7 +583,7 @@ export default function Home() {
           variants={containerVariants}
           className="relative flex flex-col items-start pt-12 md:pt-24"
         >
-          <motion.div variants={itemVariants} className="rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-medium text-muted mb-6">
+          <motion.div variants={itemVariants} className="mb-6 rounded-full bg-surface px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-accent shadow-[0_10px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
             Available for new opportunities
           </motion.div>
           <motion.div variants={itemVariants} className="flex flex-col lg:flex-row items-start gap-12 w-full">
@@ -511,10 +599,10 @@ export default function Home() {
                     className="absolute inset-0"
                   >
                     <Image
-                      src={profilePic}
+                      src={profilePicLight}
                       alt="Rhys Jonathan Abalon"
                       fill
-                      className="rounded-3xl object-cover border border-border shadow-2xl"
+                      className="rounded-3xl object-cover shadow-[0_24px_80px_rgba(0,0,0,0.28)]"
                       priority
                     />
                   </motion.div>
@@ -528,10 +616,10 @@ export default function Home() {
                     className="absolute inset-0"
                   >
                     <Image
-                      src={profilePicLight}
+                      src={profilePic}
                       alt="Rhys Jonathan Abalon"
                       fill
-                      className="rounded-3xl object-cover border border-border shadow-2xl"
+                      className="rounded-3xl object-cover shadow-[0_24px_80px_rgba(0,0,0,0.28)]"
                       priority
                     />
                   </motion.div>
@@ -543,12 +631,12 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col items-start pt-4">
-              <h1 className="text-5xl font-bold tracking-tight text-primary md:text-7xl lg:text-8xl">
-                Rhys Jonathan <br className="hidden md:block" />
-                <span className="text-muted">Abalon</span>
+              <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-primary md:text-7xl lg:text-8xl">
+                Software <br className="hidden md:block" />
+                <span className="text-primary/55 dark:text-primary/50">Engineer</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-lg text-muted md:text-xl leading-relaxed">
-                Aspiring Software engineer building fast web and mobile apps. No gimmicks just clean interfaces, practical automation, and solid code.
+              <p className="mt-6 max-w-2xl rounded-3xl bg-surface/70 p-5 text-lg leading-relaxed text-muted shadow-[0_18px_60px_rgba(0,0,0,0.08)] backdrop-blur-sm md:text-xl dark:shadow-[0_22px_70px_rgba(0,0,0,0.28)]">
+                Software engineer building fast web and mobile apps. Clean interfaces, practical automation, and reliable code for real workflows.
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Button href="#contact" primary icon={ArrowRight}>Let's talk</Button>
@@ -567,13 +655,27 @@ export default function Home() {
           variants={containerVariants}
           className="scroll-mt-32"
         >
-          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
-            01. Background
-          </motion.h2>
-          <motion.div variants={itemVariants} className="rounded-3xl border border-border bg-surface/50 p-8 md:p-12 backdrop-blur-sm">
-            <p className="text-lg leading-relaxed text-muted">
-              I am a 23-year-old Computer Science graduate from Laguna University, specializing in Data Science. As an aspiring software engineer and web developer, I am passionate about building robust and scalable applications. My professional experience includes a dedicated internship at SP. Madrid & Associates, where I focused on web development and engineered Python automations to streamline complex workflows. I leverage a comprehensive modern tech stack including React, Next.js, Node.js, and Python alongside advanced AI tools to deliver efficient, well-architected, and user-centric solutions.
-            </p>
+          <motion.div variants={itemVariants} className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">
+                01. Background
+              </h2>
+              <p className="mt-3 max-w-2xl text-muted">
+                Focused on practical engineering work across product interfaces, workflow automation, and data-backed systems.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium text-accent">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              Laguna University
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="group relative overflow-hidden rounded-3xl bg-surface/70 p-[1px] shadow-[0_22px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:shadow-[0_24px_80px_rgba(0,0,0,0.30)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-500/15 via-transparent to-emerald-400/10 opacity-90 transition-opacity group-hover:opacity-100" />
+            <div className="relative rounded-3xl bg-background/75 p-8 md:p-12">
+              <p className="text-lg leading-relaxed text-muted">
+                I am a Computer Science graduate from Laguna University with a specialization in Data Science, focused on building robust, scalable web applications and workflow automations. My experience includes an internship at SP. Madrid & Associates, where I contributed to web development projects and engineered Python automations for complex operational tasks. I work across React, Next.js, Node.js, Python, databases, and modern AI tools to deliver efficient, well-architected, user-centered solutions.
+              </p>
+            </div>
           </motion.div>
         </motion.section>
 
@@ -586,27 +688,58 @@ export default function Home() {
           variants={containerVariants}
           className="scroll-mt-32"
         >
-          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
-            02. Arsenal
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {stack.map((group, i) => (
+          <motion.div variants={itemVariants} className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">
+                02. Arsenal
+              </h2>
+              <p className="mt-3 max-w-2xl text-muted">
+                A practical toolkit for shipping full-stack products, automation systems, and AI-assisted development work.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium text-accent">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              {stack.reduce((total, group) => total + group.items.length, 0)} tools
+            </div>
+          </motion.div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {stack.map((group) => (
               <motion.div
                 key={group.title}
                 variants={itemVariants}
-                className={`rounded-3xl border border-border bg-surface/50 p-6 backdrop-blur-sm transition-colors hover:bg-surface ${group.wide ? "lg:col-span-2" : ""
-                  }`}
+                className={`group relative overflow-hidden rounded-3xl bg-surface/65 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 dark:shadow-[0_22px_80px_rgba(0,0,0,0.30)] ${group.wide ? "md:col-span-2" : ""}`}
               >
-                <h3 className="text-sm font-medium text-muted mb-6 uppercase tracking-wider">{group.title}</h3>
-                <div className="flex flex-wrap gap-6">
-                  {group.items.map((item) => (
-                    <div key={item.id} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1 hover:scale-105 active:scale-95 duration-200">
-                      <div className={`h-10 w-10 transition-all duration-300 ${item.invert ? (isDarkMode ? "invert brightness-0" : "brightness-0") : ""}`}>
-                        <StackIcon name={item.id} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${group.tone} opacity-70 transition-opacity duration-200 group-hover:opacity-95`} />
+                <div className="relative h-full rounded-2xl bg-background/60 p-5">
+                  <div className="mb-5 flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface/80 text-accent shadow-[0_10px_26px_rgba(0,0,0,0.12)] dark:shadow-[0_14px_34px_rgba(0,0,0,0.30)]">
+                          <group.icon size={17} />
+                        </span>
+                        <span className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">{group.role}</span>
                       </div>
-                      <span className="text-xs font-medium text-muted">{item.label}</span>
+                      <h3 className="text-xl font-bold tracking-tight text-primary">{group.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">{group.summary}</p>
                     </div>
-                  ))}
+                    <span className="rounded-full bg-surface/85 px-3 py-1 text-xs font-semibold text-muted shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.26)]">
+                      {String(group.items.length).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {group.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex min-h-12 items-center gap-3 rounded-xl bg-surface/80 px-3 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-surface active:scale-[0.98] dark:shadow-[0_10px_28px_rgba(0,0,0,0.22)]"
+                      >
+                        <div className={`h-7 w-7 shrink-0 transition-all duration-300 ${item.invert ? (isDarkMode ? "invert brightness-0" : "brightness-0") : ""}`}>
+                          <StackIcon name={item.id} />
+                        </div>
+                        <span className="min-w-0 text-sm font-medium leading-tight text-primary">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -622,28 +755,74 @@ export default function Home() {
           variants={containerVariants}
           className="scroll-mt-32"
         >
-          <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight mb-8">
-            03. Projects
-          </motion.h2>
+          <motion.div variants={itemVariants} className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">
+                03. Projects
+              </h2>
+              <p className="mt-3 max-w-2xl text-muted">
+                Selected web and mobile builds with direct links, stack details, and product screenshots.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium text-accent">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              {projects.length} builds
+            </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((proj, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
                 onClick={() => setSelectedProject(proj)}
-                className="group relative overflow-hidden rounded-3xl border border-border bg-surface/50 p-4 backdrop-blur-sm transition-colors hover:bg-surface flex flex-col gap-4 cursor-pointer"
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedProject(proj);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${proj.title} project gallery`}
+                className="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-surface/65 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-surface focus:outline-none focus:ring-2 focus:ring-accent/40 dark:shadow-[0_22px_80px_rgba(0,0,0,0.30)]"
               >
-                <div className={`relative aspect-video w-full overflow-hidden rounded-2xl border border-border/50 bg-background/50 ${proj.isMobile ? 'p-2' : ''}`}>
+                <div className={`relative aspect-video w-full overflow-hidden rounded-2xl bg-background/55 ${proj.isMobile ? 'p-2' : ''}`}>
                   <Image
                     src={proj.images[0]}
                     alt={proj.title}
                     fill
                     className={`${proj.isMobile ? 'object-contain' : 'object-cover'} transition-transform duration-500 group-hover:scale-105`}
                   />
+                  <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted shadow-[0_10px_30px_rgba(0,0,0,0.14)] backdrop-blur-md">
+                    <CalendarDays size={13} />
+                    {proj.date}
+                  </div>
                 </div>
-                <div className="px-2 pb-2">
-                  <h3 className="text-xl font-bold text-primary">{proj.title}</h3>
+                <div className="flex flex-1 flex-col px-2 pb-2 pt-1">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold tracking-tight text-primary">{proj.title}</h3>
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent">{proj.role} / {proj.development}</p>
+                    </div>
+                    <ArrowRight size={18} className="mt-1 shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent" />
+                  </div>
                   <p className="text-muted mt-2 text-sm leading-relaxed">{proj.desc}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {proj.techStack.slice(0, 4).map((tech) => (
+                      <span key={tech} className="rounded-full bg-background/70 px-2.5 py-1 text-xs font-medium text-muted">
+                        {tech}
+                      </span>
+                    ))}
+                    {proj.techStack.length > 4 && (
+                      <span className="rounded-full bg-background/70 px-2.5 py-1 text-xs font-medium text-muted">
+                        +{proj.techStack.length - 4}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <span className="text-xs font-medium text-muted">{proj.images.length} screenshots</span>
+                    <ProjectAction project={proj} />
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -668,6 +847,8 @@ export default function Home() {
                 role: "Freelance Developer",
                 company: "Identity Studio",
                 date: "Apr 2026 - Present",
+                type: "Client project",
+                techStack: ["Next.js", "React", "Tailwind", "HTML", "CSS", "JavaScript", "TypeScript", "PostgreSQL", "Supabase"],
                 desc: [
                   "Engineered a centralized point of sales system for a barbershop client, enhancing client revenue monitoring across multiple branches and providing critical business insights using Nextjs, Expressjs, Tailwind, and Supabase.",
                   "Collaborated with clients to customize solutions that align with the specific operational needs, achieving high levels of client satisfaction.",
@@ -680,6 +861,8 @@ export default function Home() {
                 role: "A.I Prompt Engineer Intern",
                 company: "SP. Madrid & Associates",
                 date: "Feb 2026 - Apr 2026",
+                type: "Internship",
+                techStack: ["Next.js", "React", "Tailwind", "HTML", "CSS", "JavaScript", "TypeScript", "Python", "Script Automation"],
                 desc: [
                   "Assisted in creating an inventory tracking system using Nextjs, Express, Tailwind, and Supabase, allowing for real-time monitoring of stock levels and sales data.",
                   "Automated data extraction from web sources to ERP-ready Excel files, significantly improving the efficiency of the inventory management system.",

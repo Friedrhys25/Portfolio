@@ -141,6 +141,11 @@ function sanitizeMessages(messages) {
 
 export async function POST(request) {
   try {
+    return NextResponse.json(
+      { error: "Chatbot Rizz is under maintenance." },
+      { status: 503 },
+    );
+
     const clientId = getClientId(request);
     const rateLimit = checkRateLimit(clientId);
 
